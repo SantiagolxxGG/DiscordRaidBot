@@ -3,27 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bot Control</title>
-    <!-- Agregar Tailwind CSS desde el CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Bot Control Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans p-6">
-    <h1 class="text-3xl font-bold mb-6 text-center">Lista de Servidores donde Está el Bot</h1>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="bg-white shadow-lg rounded-lg mb-8 p-6">
+            <h1 class="text-3xl font-bold text-center text-gray-800">Bot Control Panel</h1>
+            <p class="text-center text-gray-600 mt-2">Manage your bot across different servers</p>
+        </header>
 
-    <ul class="space-y-4">
-        <% servidores.forEach(servidor => { %>
-            <li class="flex justify-between items-center bg-white shadow-md rounded-lg p-4">
-                <strong class="text-lg"><%= servidor.nombre %></strong>
-                <div class="flex space-x-2">
-                    <form action="/start/<%= servidor.id %>" method="POST" class="inline">
-                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-200">Start</button>
-                    </form>
-                    <form action="/stop/" method="POST" class="inline">
-                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200">Stop</button>
-                    </form>
-                </div>
-            </li>
-        <% }) %>
-    </ul>
+        <main>
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Server List</h2>
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <% servidores.forEach(servidor => { %>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2"><%= servidor.nombre %></h3>
+                            <p class="text-gray-600 mb-4">Server ID: <%= servidor.id %></p>
+                            <div class="flex space-x-2">
+                                <form action="/start/<%= servidor.id %>" method="POST" class="flex-1">
+                                    <button type="submit" class="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300 ease-in-out flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                                        </svg>
+                                        Start
+                                    </button>
+                                </form>
+                                <form action="/stop/<%= servidor.id %>" method="POST" class="flex-1">
+                                    <button type="submit" class="w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300 ease-in-out flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" />
+                                        </svg>
+                                        Stop
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </main>
+    </div>
+    <footer class="mt-12 bg-white shadow-lg">
+        <div class="container mx-auto px-4 py-6 text-center text-gray-600">
+            &copy; 2023 Bot Control Panel. All rights reserved.
+        </div>
+    </footer>
 </body>
 </html>
