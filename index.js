@@ -10,6 +10,9 @@ if (!fs.existsSync('webhooks.json')) {
     console.log('Archivo webhooks.json creado.');
 }
 
+// ATT: Akit
+console.log("Deja eso santi te va a cargar la chingada");
+
 // Verificar y crear el archivo config.json si no existe
 if (!fs.existsSync('config.json')) {
     fs.writeFileSync('config.json', JSON.stringify({
